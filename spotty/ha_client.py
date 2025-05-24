@@ -112,24 +112,40 @@ class HomeAssistantClient:
                 name = f"NFC Tag {tag_id}"
                 
             # Prepare the tag data
+            # Home Assistant API expects the tag_id and a list of attributes
             data = {
                 "tag_id": tag_id,
-                "name": name
+                "name": name,
+                "last_scanned": None,
+                "id": None,
+                "attributes": {
+                    "device_id": self.device_id,
+                    "source": "spotty_nfc_bridge"
+                }
             }
             
             # Send the registration request
             response = requests.post(
-                f"{self.base_url}/api/tag/create",
+                f"{self.base_url}/api/tags",
                 headers=self.headers,
-                data=json.dumps(data),
+                json=data,
                 timeout=10
             )
             
             if response.status_code in [200, 201]:
                 logger.info(f"Successfully registered tag {tag_id} in Home Assistant")
                 return True
+            elif response.status_code == 409:
+                # Tag already exists, which is fine
+                logger.info(f"Tag {tag_id} already exists in Home Assistant")
+                return True
             else:
-                logger.error(f"Failed to register tag: {response.status_code}")
+                # Log more details about the error
+                try:
+                    error_details = response.json()
+                    logger.error(f"Failed to register tag: {response.status_code}, Details: {error_details}")
+                except:
+                    logger.error(f"Failed to register tag: {response.status_code}, Response: {response.text}")
                 return False
                 
         except Exception as e:
