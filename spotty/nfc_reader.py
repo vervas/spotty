@@ -4,6 +4,16 @@ NFC Reader module for interfacing with PN532 hardware
 """
 
 import logging
+import time
+
+# Use mock GPIO pins to avoid hardware access issues
+from gpiozero import Device
+from gpiozero.pins.mock import MockFactory
+
+# Set the pin factory to mock before importing pn532
+Device.pin_factory = MockFactory()
+
+# Now import the PN532 library
 from pn532 import PN532_UART
 
 logger = logging.getLogger("spotty.nfc_reader")
@@ -23,6 +33,7 @@ class PN532Reader:
         try:
             # Initialize the PN532 using UART
             logger.info(f"Initializing PN532 on {self.port}")
+            # Use the same parameters as the example code
             self.pn532 = PN532_UART(self.port, debug=False, reset=20)
             
             # Get firmware version to check connection
