@@ -6,10 +6,12 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # Install system dependencies
 RUN apk add --no-cache \
-    python3 \
+    python3-dev \
+    linux-headers \
     py3-pip \
-    curl \
-    git
+    gcc \
+    musl-dev \
+    build-base
 
 # Set up working directory
 WORKDIR /app
@@ -17,6 +19,7 @@ WORKDIR /app
 # Copy project files
 COPY pyproject.toml README.md ./
 COPY spotty ./spotty/
+COPY pn532 ./pn532/
 
 # Create and use a virtual environment
 RUN python3 -m venv /opt/venv

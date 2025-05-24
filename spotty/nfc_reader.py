@@ -4,7 +4,6 @@ NFC Reader module for interfacing with PN532 hardware
 """
 
 import logging
-import time
 from pn532 import PN532_UART
 
 logger = logging.getLogger("spotty.nfc_reader")
