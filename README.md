@@ -18,16 +18,16 @@ A bridge between a PN532 NFC reader connected to a Raspberry Pi and Home Assista
 
 ## Installation
 
-### Option 1: Install as a Home Assistant Add-on
+### Option 1: Direct Installation
 
 1. In Home Assistant, go to **Settings** → **Add-ons** → **Add-on Store**
 2. Click the three dots menu in the upper right corner and select **Repositories**
-3. Add this repository URL
+3. Add this repository URL: `https://github.com/vervas/spotty`
 4. Find the "Spotty NFC Bridge" add-on in the list and click **Install**
 
-### Option 2: Create a Custom Add-on Repository
+### Option 2: Fork and Customize
 
-The recommended way to install custom add-ons is through a repository:
+If you want to customize this add-on or include it in your own collection:
 
 1. Create a GitHub repository with this structure:
    ```
