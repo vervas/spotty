@@ -142,14 +142,20 @@ class SpottyService:
                 
                 if uid:
                     tag_id = "_".join([hex(i) for i in uid])
+                    formatted_tag_id = f"nfc_{tag_id}"
                     logger.info(f"Tag detected: {tag_id}")
                     
-                    # Send to Home Assistant
-                    success = self.ha_client.tag_scanned(f"nfc_{tag_id}")
-                    if success:
-                        logger.info(f"Tag {tag_id} registered with Home Assistant")
+                    # First, try to register the tag in Home Assistant's tag registry
+                    # This will only create the tag if it doesn't already exist
+                    register_success = self.ha_client.register_tag(formatted_tag_id)
+                    
+                    # Then, send the tag_scanned event to trigger automations
+                    event_success = self.ha_client.tag_scanned(formatted_tag_id)
+                    
+                    if event_success:
+                        logger.info(f"Tag scan event for {tag_id} sent to Home Assistant")
                     else:
-                        logger.error(f"Failed to register tag {tag_id} with Home Assistant")
+                        logger.error(f"Failed to send tag scan event for {tag_id} to Home Assistant")
                     
                     # Prevent multiple reads of the same tag
                     time.sleep(2)

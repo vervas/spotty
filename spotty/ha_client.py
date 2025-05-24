@@ -100,6 +100,41 @@ class HomeAssistantClient:
         except Exception as e:
             logger.error(f"Error sending tag_scanned event: {e}")
             return False
+            
+    def register_tag(self, tag_id, name=None):
+        """Register a tag in Home Assistant's tag registry
+        
+        This creates a persistent tag in Home Assistant that can be used in automations.
+        """
+        try:
+            # If no name is provided, use the tag_id as the name
+            if name is None:
+                name = f"NFC Tag {tag_id}"
+                
+            # Prepare the tag data
+            data = {
+                "tag_id": tag_id,
+                "name": name
+            }
+            
+            # Send the registration request
+            response = requests.post(
+                f"{self.base_url}/api/tag/create",
+                headers=self.headers,
+                data=json.dumps(data),
+                timeout=10
+            )
+            
+            if response.status_code in [200, 201]:
+                logger.info(f"Successfully registered tag {tag_id} in Home Assistant")
+                return True
+            else:
+                logger.error(f"Failed to register tag: {response.status_code}")
+                return False
+                
+        except Exception as e:
+            logger.error(f"Error registering tag: {e}")
+            return False
     
     def call_service(self, domain, service, service_data=None):
         """Call a service in Home Assistant"""
