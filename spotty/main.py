@@ -145,11 +145,8 @@ class SpottyService:
                     formatted_tag_id = f"nfc_{tag_id}"
                     logger.info(f"Tag detected: {tag_id}")
                     
-                    # First, try to register the tag in Home Assistant's tag registry
-                    # This will only create the tag if it doesn't already exist
-                    register_success = self.ha_client.register_tag(formatted_tag_id)
-                    
-                    # Then, send the tag_scanned event to trigger automations
+                    # Send the tag_scanned event to Home Assistant
+                    # This will trigger any automations associated with the tag
                     event_success = self.ha_client.tag_scanned(formatted_tag_id)
                     
                     if event_success:

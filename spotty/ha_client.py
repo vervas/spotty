@@ -74,7 +74,10 @@ class HomeAssistantClient:
             return False
     
     def tag_scanned(self, tag_id):
-        """Send a tag_scanned event to Home Assistant"""
+        """Send a tag_scanned event to Home Assistant
+        
+        This will trigger any automations associated with the tag.
+        """
         try:
             # Prepare the event data
             data = {
@@ -86,70 +89,24 @@ class HomeAssistantClient:
             response = requests.post(
                 f"{self.base_url}/api/events/tag_scanned",
                 headers=self.headers,
-                data=json.dumps(data),
+                json=data,  # Use json parameter instead of data for proper JSON encoding
                 timeout=10
             )
             
             if response.status_code == 200:
-                logger.debug(f"Successfully sent tag_scanned event for {tag_id}")
-                return True
-            else:
-                logger.error(f"Failed to send tag_scanned event: {response.status_code}")
-                return False
-                
-        except Exception as e:
-            logger.error(f"Error sending tag_scanned event: {e}")
-            return False
-            
-    def register_tag(self, tag_id, name=None):
-        """Register a tag in Home Assistant's tag registry
-        
-        This creates a persistent tag in Home Assistant that can be used in automations.
-        """
-        try:
-            # If no name is provided, use the tag_id as the name
-            if name is None:
-                name = f"NFC Tag {tag_id}"
-                
-            # Prepare the tag data
-            # Home Assistant API expects the tag_id and a list of attributes
-            data = {
-                "tag_id": tag_id,
-                "name": name,
-                "last_scanned": None,
-                "id": None,
-                "attributes": {
-                    "device_id": self.device_id,
-                    "source": "spotty_nfc_bridge"
-                }
-            }
-            
-            # Send the registration request
-            response = requests.post(
-                f"{self.base_url}/api/tags",
-                headers=self.headers,
-                json=data,
-                timeout=10
-            )
-            
-            if response.status_code in [200, 201]:
-                logger.info(f"Successfully registered tag {tag_id} in Home Assistant")
-                return True
-            elif response.status_code == 409:
-                # Tag already exists, which is fine
-                logger.info(f"Tag {tag_id} already exists in Home Assistant")
+                logger.info(f"Successfully sent tag_scanned event for {tag_id}")
                 return True
             else:
                 # Log more details about the error
                 try:
                     error_details = response.json()
-                    logger.error(f"Failed to register tag: {response.status_code}, Details: {error_details}")
+                    logger.error(f"Failed to send tag_scanned event: {response.status_code}, Details: {error_details}")
                 except:
-                    logger.error(f"Failed to register tag: {response.status_code}, Response: {response.text}")
+                    logger.error(f"Failed to send tag_scanned event: {response.status_code}, Response: {response.text}")
                 return False
                 
         except Exception as e:
-            logger.error(f"Error registering tag: {e}")
+            logger.error(f"Error sending tag_scanned event: {e}")
             return False
     
     def call_service(self, domain, service, service_data=None):

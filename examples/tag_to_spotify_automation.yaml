@@ -1,0 +1,23 @@
+alias: Play song when NFC Tag is Scanned
+description: Plays a song on Spotify when a specific NFC tag is scanned
+triggers:
+  - event_type: tag_scanned
+    event_data:
+      tag_id: nfc_test_tag
+    trigger: event
+conditions: []
+actions:
+  # First select the Spotify source
+  - service: media_player.select_source
+    target:
+      entity_id: media_player.spotify_vervas_s
+    data:
+      source: Moode Spotify
+  # Then play the song
+  - service: media_player.play_media
+    target:
+      entity_id: media_player.spotify_vervas_s
+    data:
+      media_content_id: spotify:track:3Od0nkClll8uYFTyn2A3bB  # Kids song
+      media_content_type: music
+mode: single
