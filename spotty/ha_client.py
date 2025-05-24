@@ -41,8 +41,9 @@ class HomeAssistantClient:
                 "Authorization": f"Bearer {token}"
             }
         else:
-            # No authentication available
-            logger.error("No authentication method available")
+            # No authentication available, but still try to connect
+            # This might work for local unsecured Home Assistant instances
+            logger.warning("No authentication token available, attempting to connect without authentication")
             self.headers = {"Content-Type": "application/json"}
     
     def test_connection(self):

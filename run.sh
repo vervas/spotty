@@ -47,4 +47,9 @@ bashio::log.info "Log level: ${LOG_LEVEL}"
 
 # Activate virtual environment and run the application
 source /opt/venv/bin/activate
+
+# Make sure the SUPERVISOR_TOKEN is available to the Python application
+export SUPERVISOR_TOKEN="${SUPERVISOR_TOKEN:-}"
+
+# Run the application
 python -m spotty.main --config /tmp/spotty_config.yaml
