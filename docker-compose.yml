@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  spotty:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spotty
+    restart: unless-stopped
+    devices:
+      - /dev/ttyAMA0:/dev/ttyAMA0  # Map the NFC reader device
+    volumes:
+      - ./config:/config  # Mount config directory for token
+    environment:
+      - TZ=UTC  # Set your timezone here
+    # For Home Assistant add-on compatibility
+    network_mode: host

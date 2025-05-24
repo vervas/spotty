@@ -1,0 +1,24 @@
+{
+  "name": "Spotty NFC Bridge",
+  "version": "0.1.0",
+  "slug": "spotty",
+  "description": "Bridge between PN532 NFC reader and Home Assistant's native tag system",
+  "url": "https://github.com/yourusername/spotty",
+  "startup": "application",
+  "boot": "auto",
+  "arch": ["armhf", "armv7", "aarch64", "amd64", "i386"],
+  "init": false,
+  "devices": ["/dev/ttyAMA0:/dev/ttyAMA0:rwm"],
+  "options": {
+    "device": "/dev/ttyAMA0",
+    "scan_interval": 0.5,
+    "log_level": "info"
+  },
+  "schema": {
+    "device": "str",
+    "scan_interval": "float(0.1,10)",
+    "log_level": "list(trace|debug|info|notice|warning|error|fatal)"
+  },
+  "hassio_api": true,
+  "homeassistant_api": true
+}

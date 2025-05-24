@@ -1,0 +1,15 @@
+# Spotty - Home Assistant NFC Bridge Configuration
+
+# Device path for the PN532 NFC reader
+device: /dev/ttyAMA0
+
+# Home Assistant URL
+# For Home Assistant OS, use http://supervisor/core
+# For other installations, use the full URL (e.g., http://homeassistant.local:8123)
+ha_url: http://supervisor/core
+
+# Scan interval in seconds
+scan_interval: 0.5
+
+# Log level (DEBUG, INFO, WARNING, ERROR)
+log_level: INFO
