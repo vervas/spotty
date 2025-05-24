@@ -8,7 +8,7 @@
   "boot": "auto",
   "arch": ["armhf", "armv7", "aarch64", "amd64", "i386"],
   "init": false,
-  "devices": ["/dev/ttyAMA0:/dev/ttyAMA0:rwm"],
+  "devices": ["/dev/ttyAMA0"],
   "options": {
     "device": "/dev/ttyAMA0",
     "scan_interval": 0.5,
