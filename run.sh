@@ -45,5 +45,6 @@ bashio::log.info "Device: ${DEVICE}"
 bashio::log.info "Scan interval: ${SCAN_INTERVAL}"
 bashio::log.info "Log level: ${LOG_LEVEL}"
 
-# Run the application
-python3 -m spotty.main --config /tmp/spotty_config.yaml
+# Activate virtual environment and run the application
+source /opt/venv/bin/activate
+python -m spotty.main --config /tmp/spotty_config.yaml

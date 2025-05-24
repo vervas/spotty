@@ -18,7 +18,11 @@ WORKDIR /app
 COPY pyproject.toml README.md ./
 COPY spotty ./spotty/
 
-# Install dependencies using standard pip
+# Create and use a virtual environment
+RUN python3 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Install dependencies in the virtual environment
 RUN pip3 install .
 
 # Copy data for add-on
