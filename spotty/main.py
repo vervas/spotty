@@ -99,19 +99,16 @@ class SpottyService:
     
     def _get_token(self):
         """Get the Home Assistant long-lived access token"""
-        # Check if running as a Home Assistant add-on
-        is_addon = os.path.exists("/var/run/s6/services")
+        # Check if running as a Home Assistant add-on by looking for SUPERVISOR_TOKEN
+        supervisor_token = os.environ.get('SUPERVISOR_TOKEN') or os.environ.get('HASSIO_TOKEN')
+        is_addon = supervisor_token is not None
         
         if is_addon:
             # When running as an add-on, use the SUPERVISOR_TOKEN environment variable
-            logger.info("Running as Home Assistant add-on, using SUPERVISOR_TOKEN")
-            supervisor_token = os.environ.get('SUPERVISOR_TOKEN')
-            if supervisor_token:
-                return supervisor_token
-            else:
-                logger.warning("SUPERVISOR_TOKEN environment variable not found")
+            logger.info("Running as Home Assistant add-on, using Supervisor token")
+            return supervisor_token
             
-        # Running standalone or SUPERVISOR_TOKEN not found, try to get token from file
+        # Running standalone, try to get token from file
         token_file = self.config.get("token_file", "/config/spotty_token.txt")
         
         if os.path.exists(token_file):
@@ -126,6 +123,8 @@ class SpottyService:
             logger.warning("Please create a long-lived access token in Home Assistant")
             logger.warning(f"and save it to {token_file}")
         return None
+    
+
     
     def run(self):
         """Main service loop"""

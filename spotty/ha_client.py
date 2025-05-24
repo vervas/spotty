@@ -19,19 +19,26 @@ class HomeAssistantClient:
         When running as a Home Assistant add-on, no token is needed as we can use
         the Supervisor API which provides access to Home Assistant.
         """
-        self.base_url = base_url.rstrip('/')
         self.device_id = device_id
         
-        # Check if running as a Home Assistant add-on
-        self.is_addon = os.path.exists("/var/run/s6/services")
+        # Check if running as a Home Assistant add-on by looking for SUPERVISOR_TOKEN
+        supervisor_token = os.environ.get('SUPERVISOR_TOKEN') or os.environ.get('HASSIO_TOKEN')
+        self.is_addon = supervisor_token is not None
+        
+        # When running as an add-on, use the Supervisor API URL
+        if self.is_addon:
+            self.base_url = "http://supervisor/core"
+            logger.info(f"Running as Home Assistant add-on, using URL: {self.base_url}")
+        else:
+            self.base_url = base_url.rstrip('/')
         
         if self.is_addon:
             # Running as an add-on, use Supervisor API
+            supervisor_token = os.environ.get('SUPERVISOR_TOKEN') or os.environ.get('HASSIO_TOKEN')
             logger.info("Running as Home Assistant add-on, using Supervisor API")
             self.headers = {
                 "Content-Type": "application/json",
-                # The Supervisor API token is automatically injected by the add-on system
-                "Authorization": f"Bearer {os.environ.get('SUPERVISOR_TOKEN', '')}"
+                "Authorization": f"Bearer {supervisor_token}"
             }
         elif token:
             # Running standalone, use provided token
